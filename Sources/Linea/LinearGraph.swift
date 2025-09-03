@@ -30,21 +30,21 @@ public struct LinearGraph: View {
     @State private var y: LinearScale
     @State private var lastDrag: CGSize = .zero
     @State private var lastPinch: CGFloat = 1
-
+    
     private let series: [LinearSeries]
     private let style: LinearGraphStyle
     private let ticks = NiceTickProvider()
     private let controller = ZoomPanController()
-
+    
     private let panMode: ZoomAxis
     private let zoomMode: ZoomAxis
     private let xFormatter: AxisFormatter
     private let yFormatter: AxisFormatter
-
+    
     // Auto-range
     private let autoRange: AutoRangeMode
     private let autoRescaleOnSeriesChange: Bool
-
+    
     // Convenience init: auto-scale from data (no explicit scales required)
     public init(
         series: [LinearSeries],
@@ -64,7 +64,7 @@ public struct LinearGraph: View {
         self.yFormatter = yFormatter
         self.autoRange = autoRange
         self.autoRescaleOnSeriesChange = autoRescaleOnSeriesChange
-
+        
         // compute scales from data
         let (xmin, xmax) = AutoRanger.dataBoundsX(series: series)
         let (ymin, ymax) = AutoRanger.dataBoundsY(series: series)
@@ -85,7 +85,7 @@ public struct LinearGraph: View {
         self._x = State(initialValue: xScale)
         self._y = State(initialValue: yScale)
     }
-
+    
     // Full init: user supplies scales explicitly
     public init(
         series: [LinearSeries],
@@ -110,13 +110,13 @@ public struct LinearGraph: View {
         self.autoRange = autoRange
         self.autoRescaleOnSeriesChange = autoRescaleOnSeriesChange
     }
-
+    
     public var body: some View {
         GeometryReader { geo in
             ZStack {
                 RoundedRectangle(cornerRadius: style.cornerRadius)
                     .fill(style.background)
-
+                
                 // Grid + tick labels
                 Canvas { ctx, size in
                     let xt = ticks.ticks(scale: x, target: 6)
@@ -140,28 +140,45 @@ public struct LinearGraph: View {
                     }
                     ctx.stroke(grid, with: .color(.secondary.opacity(style.gridOpacity)), lineWidth: 0.5)
                 }
-
+                
                 // Series lines (per-series styles)
                 Canvas { ctx, size in
                     let palette: [Color] = [.blue, .red, .green, .orange, .purple, .pink, .teal, .indigo]
                     for (idx, s) in series.enumerated() {
-                        guard let first = s.points.first else { continue }
                         let sStyle = s.style ?? SeriesStyle(color: palette[idx % palette.count])
-
-                        var path = Path()
-                        @MainActor func map(_ p: DataPoint) -> CGPoint {
-                            CGPoint(
-                                x: size.width  * CGFloat(x.toUnit(p.x)),
-                                y: size.height * CGFloat(1 - y.toUnit(p.y))
-                            )
+                        
+                        // inside the Canvas drawing of series in LinearGraph
+                        let pts: [CGPoint] = s.points.map { p in
+                            CGPoint(x: size.width * CGFloat(x.toUnit(p.x)),
+                                    y: size.height * CGFloat(1 - y.toUnit(p.y)))
                         }
-                        path.move(to: map(first))
-                        for p in s.points.dropFirst() { path.addLine(to: map(p)) }
-
+                        
+                        let path: Path
+                        switch sStyle.smoothing {
+                        case .none:
+                            path = PathBuilder.linePath(points: pts)
+                        case let .catmullRom(tension):
+                            path = PathBuilder.catmullRomUniform(points: pts, tension: tension)
+                        case .monotoneCubic:
+                            // ensure xs are strictly increasing
+                            let xs = pts.map { $0.x }, ys = pts.map { $0.y }
+                            path = PathBuilder.monotoneCubic(xs: xs, ys: ys)
+                        case let .tcb(t, b, c):
+                            path = PathBuilder.kochanekBartels(points: pts, tension: t, bias: b, continuity: c)
+                        case let .betaSpline(bias, tension, samples):
+                            path = PathBuilder.betaSplineSampled(points: pts, bias: bias, tension: tension, samplesPerSegment: samples)
+                        case .bSpline(let degree, let knots, let samples, let param):
+                            path = PathBuilder.bSplinePath(control: pts,
+                                                           degree: max(1, degree),
+                                                           knots: knots,
+                                                           samplesPerSpan: samples,
+                                                           parameterization: param)
+                        }
+                        
                         var stroke = StrokeStyle(lineWidth: sStyle.lineWidth, lineCap: .round, lineJoin: .round)
                         if let dash = sStyle.dash { stroke = StrokeStyle(lineWidth: sStyle.lineWidth, lineCap: .round, lineJoin: .round, dash: dash) }
                         ctx.stroke(path, with: .color(sStyle.color.opacity(sStyle.opacity)), style: stroke)
-
+                        
                         if let fillColor = sStyle.fill {
                             var fill = path
                             fill.addLine(to: CGPoint(x: size.width, y: size.height))
