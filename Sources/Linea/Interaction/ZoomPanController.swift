@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public enum ZoomAxis { case x, y, xy }
+public enum ZoomAxis { case none, x, y, xy }
 
 public final class ZoomPanController {
     public init() {}

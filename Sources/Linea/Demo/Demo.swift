@@ -37,12 +37,13 @@ struct Demo: View {
                 Picker("Smoothing", selection: $smoothingIndex) {
                     Text("None").tag(0)
                     Text("Monotone").tag(1)
-                    Text("Catmull-Rom").tag(2)
-                    Text("Beta spline").tag(3)
+                    Text("Catmull").tag(2)
+                    Text("Beta").tag(3)
                     Text("TCB").tag(4)
                     Text("B Spline").tag(5)
                 }
                 .pickerStyle(.segmented)
+                .padding(.horizontal)
             }.font(.footnote)
             
             let smooth: Smoothing = {
@@ -50,8 +51,8 @@ struct Demo: View {
                 case 1: return .monotoneCubic
                 case 2: return .catmullRom(0.9)
                 case 3: return .betaSpline(bias: 0.0, tension: 10, samplesPerSegment: 200)
-                case 4: return .tcb()
-                case 5: return .bSpline(degree: 100,
+                case 4: return .tcb(tension: 0.1, bias: 0.5, continuity: 0)
+                case 5: return .bSpline(degree: 10,
                                         knots: nil,
                                         samplesPerSpan: 5,
                                         parameterization: .openUniform)
@@ -63,10 +64,16 @@ struct Demo: View {
                 series: series.map { s in
                     var s = s; s.style = (s.style ?? SeriesStyle()); s.style?.smoothing = smooth; return s
                 },
-                style: .init(gridOpacity: 0.9, cornerRadius: 10, background: .gray.opacity(0.2)),
+                style: .init(
+                    gridOpacity: 0.9,
+                    cornerRadius: 5,
+                    background: .gray.opacity(0.2),
+                    xTickTarget: 3,
+                    yTickTarget: 4
+                ),
                 panMode: .x,
                 zoomMode: .x,
-                autoRange: .padded(x: 0.05, y: 0.3, nice: true),
+                autoRange: .padded(x: 0.0, y: 0.3, nice: true),
                 autoRescaleOnSeriesChange: true
             )
             .frame(height: 260)
@@ -78,6 +85,5 @@ struct Demo: View {
 struct Demo_Previews: PreviewProvider {
     static var previews: some View {
         Demo()
-            .preferredColorScheme(.dark)
     }
 }

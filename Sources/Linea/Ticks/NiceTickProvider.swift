@@ -1,15 +1,11 @@
 //
-//  NiceTickProvider.swift
+//  NiceTick.swift
 //  Linea
 //
-//  Created by Igor Gun on 02.09.25.
+//  Created by Igor Gun on 04.09.25.
 //
 
 import Foundation
-
-public struct Tick { public let value: Double; public let label: String }
-
-public protocol TickProvider { func ticks(scale: AxisScale, target: Int) -> [Tick] }
 
 public struct NiceTickProvider: TickProvider {
     public init() {}

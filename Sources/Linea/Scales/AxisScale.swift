@@ -30,6 +30,7 @@ public protocol AxisScale: AnyObject {
 
 public enum AutoRangeMode {
     case none          // don't touch
+    case fixed(yMin: Double, yMax: Double)
     case tight         // exact data min/max
     case padded(x: Double = 0.05, y: Double = 0.05, nice: Bool = true) // add % padding, optionally round to nice ticks
 }
