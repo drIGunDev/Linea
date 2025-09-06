@@ -11,14 +11,17 @@ struct Demo: View {
     
     @State private var series: [LinearSeries] = [
         .init(
-            points: (0..<200).map { i in .init(x: Double(i), y: (Double(sin(Double(i)/20))) + Double.random(in: -0.8...0.8))
+            points: (0..<200).map {
+                i in .init(x: Double(i), y: sin(Double(i)/20) + Double.random(in: -0.8...0.8) )
             },
             style: .init(
                 color: .blue,
                 lineWidth: 2
-            )),
+            )
+        ),
         .init(
-            points: (0..<200).map { i in .init(x: Double(i), y: Double.random(in: -0.8...0.8))
+            points: (0..<200).map {
+                i in .init(x: Double(i), y: Double.random(in: -0.8...0.8))
             },
             style: .init(
                 color: .red,
@@ -26,7 +29,8 @@ struct Demo: View {
                 opacity: 0.7,
                 dash: [4,3],
                 smoothing: .none
-            ))
+            )
+        )
     ]
     
     @State private var smoothingIndex: Int = 0
