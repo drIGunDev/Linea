@@ -6,29 +6,25 @@
 //
 
 import Foundation
-import SwiftUI
-
-public struct DataPoint: Sendable, Hashable {
-    public var x: Double
-    public var y: Double
-    public init(x: Double, y: Double) { self.x = x; self.y = y }
-}
 
 /// Describes a single plotted series with optional per-series style.
-public struct LinearSeries: Equatable {
-    public static func == (lhs: LinearSeries, rhs: LinearSeries) -> Bool {
-        lhs.id == rhs.id
-    }
-    
+public struct LinearSeries: Identifiable, Equatable {
     public var id: String
     public var points: [DataPoint]
     public var style: SeriesStyle?
-
+//    public var yGroupID: String
+    
     public init(id: String = UUID().uuidString,
                 points: [DataPoint],
-                style: SeriesStyle? = nil) {
+                style: SeriesStyle? = nil/*,
+                yGroupID: String*/) {
         self.id = id
         self.points = points
         self.style = style
+//        self.yGroupID = yGroupID
+    }
+    
+    public static func == (lhs: LinearSeries, rhs: LinearSeries) -> Bool {
+        lhs.id == rhs.id
     }
 }

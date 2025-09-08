@@ -11,8 +11,7 @@ struct Demo: View {
     
     @State private var series: [LinearSeries] = [
         .init(
-            points: (0..<200).map {
-                i in .init(x: Double(i), y: sin(Double(i)/20) + Double.random(in: -0.8...0.8) )
+            points: (0..<200).map { i in .init(x: Double(i), y: 1*(sin(Double(i)/20) + Double.random(in: -0.8...0.8)))
             },
             style: .init(
                 color: .blue,
@@ -68,16 +67,22 @@ struct Demo: View {
                 series: series.map { s in
                     var s = s; s.style = (s.style ?? SeriesStyle()); s.style?.smoothing = smooth; return s
                 },
+                xAxis: XAxis(
+                    autoRange: .padded(frac: 0.01, nice: true),
+                    tickProvider: NiceTickProvider()
+                ),
+                
                 style: .init(
                     gridOpacity: 0.9,
                     cornerRadius: 5,
                     background: .gray.opacity(0.2),
-                    xTickTarget: 3,
+                    xTickTarget: 2,
                     yTickTarget: 4
                 ),
                 panMode: .x,
                 zoomMode: .x,
-                autoRange: .padded(x: 0.0, y: 0.3, nice: true),
+//                xAutoRange: .padded(frac: 0.01, nice: true),
+//                yAutoRange: .padded(frac: 0.01, nice: true),
                 autoRescaleOnSeriesChange: true
             )
             .frame(height: 260)
