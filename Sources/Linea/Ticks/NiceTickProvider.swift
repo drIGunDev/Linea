@@ -9,7 +9,7 @@ import Foundation
 
 public struct NiceTickProvider: TickProvider {
     public init() {}
-    public func ticks(scale: AxisScale, target: Int) -> [Tick] {
+    public func ticks(scale: any AxisScale, target: Int) -> [Tick] {
         let span = max(scale.max - scale.min, 1e-12)
         let rough = span / Double(max(target, 2))
         let pow10 = pow(10.0, floor(log10(rough)))

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public struct SeriesStyle {
+public struct SeriesStyle: Equatable {
     public var color: Color
     public var lineWidth: CGFloat
     public var opacity: Double

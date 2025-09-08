@@ -55,20 +55,6 @@ import SwiftUI
         self.max = originalMax
     }
     
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(originalMin)
-        hasher.combine(originalMax)
-        hasher.combine(min)
-        hasher.combine(max)
-    }
-    
-    public static func == (lhs: LinearScale, rhs: LinearScale) -> Bool {
-        lhs.originalMax == rhs.originalMax &&
-        lhs.originalMin == rhs.originalMin &&
-        lhs.min == rhs.min &&
-        lhs.max == rhs.max
-    }
-
     private func applyClampToOriginal() {
         guard clampToOriginal else { return }
         let span = max - min

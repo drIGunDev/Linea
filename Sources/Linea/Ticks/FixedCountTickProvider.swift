@@ -8,7 +8,7 @@
 import Foundation
 
 public struct FixedCountTickProvider: TickProvider {
-    public func ticks(scale: AxisScale, target: Int) -> [Tick] {
+    public func ticks(scale: any AxisScale, target: Int) -> [Tick] {
         let a = scale.min, b = scale.max
         guard b > a else { return [] }
         let step = (b - a) / Double(target)

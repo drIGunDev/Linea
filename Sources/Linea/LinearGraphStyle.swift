@@ -16,10 +16,6 @@ public struct LinearGraphStyle: Sendable, Hashable {
     public var background: AnyShapeStyle
     public var xTickTarget: Int
     public var yTickTarget: Int
-//    public var xFormatter: any AxisFormatter
-    public var yFormatter: any AxisFormatter
-//    public var xTickProvider: any TickProvider
-    public var yTickProvider: any TickProvider
     
     public init(
         gridEnabled: Bool = true,
@@ -27,11 +23,7 @@ public struct LinearGraphStyle: Sendable, Hashable {
         cornerRadius: CGFloat = 12,
         background: some ShapeStyle = .thinMaterial,
         xTickTarget: Int = 6,
-        yTickTarget: Int = 5,
-//        xFormatter: any AxisFormatter = NumberAxisFormatter(decimals: 0, useSI: true),
-        yFormatter: any AxisFormatter = NumberAxisFormatter(decimals: 2),
-//        xTickProvider: any TickProvider = NiceTickProvider(),
-        yTickProvider: any TickProvider = NiceTickProvider()
+        yTickTarget: Int = 5
     ) {
         self.gridEnabled = gridEnabled
         self.gridOpacity = gridOpacity
@@ -39,10 +31,6 @@ public struct LinearGraphStyle: Sendable, Hashable {
         self.background = AnyShapeStyle(background)
         self.xTickTarget = xTickTarget
         self.yTickTarget = yTickTarget
-//        self.xFormatter = xFormatter
-        self.yFormatter = yFormatter
-//        self.xTickProvider = xTickProvider
-        self.yTickProvider = yTickProvider
     }
     
     public func hash(into hasher: inout Hasher) {

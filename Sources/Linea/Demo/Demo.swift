@@ -8,28 +8,32 @@
 import SwiftUI
 
 struct Demo: View {
+    enum Ids: Int {
+        case sin, random
+    }
     
-    @State private var series: [LinearSeries] = [
-        .init(
-            points: (0..<200).map { i in .init(x: Double(i), y: 1*(sin(Double(i)/20) + Double.random(in: -0.8...0.8)))
-            },
-            style: .init(
-                color: .blue,
-                lineWidth: 2
+    @State private var series: [Ids : LinearSeries] = [.sin :
+            .init(
+                points: (0..<200).map { i in .init(x: Double(i), y: 1*(sin(Double(i)/20) + Double.random(in: -0.8...0.8)))
+                },
+                style: .init(
+                    color: .blue,
+                    lineWidth: 2
+                )
+            ),
+                                                       .random :
+            .init(
+                points: (0..<200).map {
+                    i in .init(x: Double(i), y: Double.random(in: -0.8...0.8))
+                },
+                style: .init(
+                    color: .red,
+                    lineWidth: 1,
+                    opacity: 0.7,
+                    dash: [4,3],
+                    smoothing: .none
+                )
             )
-        ),
-        .init(
-            points: (0..<200).map {
-                i in .init(x: Double(i), y: Double.random(in: -0.8...0.8))
-            },
-            style: .init(
-                color: .red,
-                lineWidth: 1,
-                opacity: 0.7,
-                dash: [4,3],
-                smoothing: .none
-            )
-        )
     ]
     
     @State private var smoothingIndex: Int = 0
@@ -63,10 +67,9 @@ struct Demo: View {
                 }
             }()
             
+            
             LinearGraph(
-                series: series.map { s in
-                    var s = s; s.style = (s.style ?? SeriesStyle()); s.style?.smoothing = smooth; return s
-                },
+                series: setSmoothing(series: series, smooth: smooth),
                 xAxis: XAxis(
                     autoRange: .padded(frac: 0.01, nice: true),
                     tickProvider: NiceTickProvider()
@@ -81,13 +84,26 @@ struct Demo: View {
                 ),
                 panMode: .x,
                 zoomMode: .x,
-//                xAutoRange: .padded(frac: 0.01, nice: true),
-//                yAutoRange: .padded(frac: 0.01, nice: true),
                 autoRescaleOnSeriesChange: true
             )
             .frame(height: 260)
             .padding()
         }
+    }
+    
+    private func setSmoothing(series: [Ids : LinearSeries], smooth: Smoothing) -> [Ids : LinearSeries] {
+        series
+            .map { id, s in
+                var s = s
+                s.style.smoothing = smooth
+                return (id, s)
+            }
+            .reduce([Ids: LinearSeries]())  { memo, tuple in
+                var m = memo
+                let (id, series) = tuple
+                m.updateValue(series, forKey: id)
+                return m
+            }
     }
 }
 

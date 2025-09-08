@@ -8,23 +8,18 @@
 import Foundation
 
 /// Describes a single plotted series with optional per-series style.
-public struct LinearSeries: Identifiable, Equatable {
-    public var id: String
+public struct LinearSeries: Equatable {
     public var points: [DataPoint]
-    public var style: SeriesStyle?
-//    public var yGroupID: String
+    public var style: SeriesStyle
     
-    public init(id: String = UUID().uuidString,
-                points: [DataPoint],
-                style: SeriesStyle? = nil/*,
-                yGroupID: String*/) {
-        self.id = id
+    public init(points: [DataPoint],
+                style: SeriesStyle) {
         self.points = points
         self.style = style
-//        self.yGroupID = yGroupID
     }
     
     public static func == (lhs: LinearSeries, rhs: LinearSeries) -> Bool {
-        lhs.id == rhs.id
+        lhs.points == rhs.points &&
+        lhs.style == rhs.style
     }
 }

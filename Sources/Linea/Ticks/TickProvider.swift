@@ -13,5 +13,5 @@ public struct Tick {
 }
 
 public protocol TickProvider: Sendable {
-    func ticks(scale: AxisScale, target: Int) -> [Tick]
+    func ticks(scale: any AxisScale, target: Int) -> [Tick]
 }

@@ -6,7 +6,7 @@
 //
 import SwiftUI
 
-public protocol AxisScale: AnyObject {
+public protocol AxisScale: AnyObject, Hashable {
     // current visible range
     var min: Double { get set }
     var max: Double { get set }
@@ -26,4 +26,21 @@ public protocol AxisScale: AnyObject {
     func zoom(by factor: CGFloat, around value: Double)
     func pan(by delta: Double)
     func reset()
+}
+
+extension AxisScale {
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(originalMin)
+        hasher.combine(originalMax)
+        hasher.combine(min)
+        hasher.combine(max)
+    }
+    
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.originalMax == rhs.originalMax &&
+        lhs.originalMin == rhs.originalMin &&
+        lhs.min == rhs.min &&
+        lhs.max == rhs.max
+    }
 }

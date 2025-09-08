@@ -15,9 +15,9 @@ public enum AxisAutoRange: Equatable {
 
 // MARK: - Auto range helpers
 public struct AutoRanger {
-    public static func dataBoundsX(series: [LinearSeries]) -> (min: Double, max: Double) {
+    public static func dataBoundsX<SeriesId: Hashable>(series: [SeriesId: LinearSeries]) -> (min: Double, max: Double) {
         var mn = Double.infinity, mx = -Double.infinity
-        for s in series { for p in s.points { mn = min(mn, p.x); mx = max(mx, p.x) } }
+        for s in series.values { for p in s.points { mn = min(mn, p.x); mx = max(mx, p.x) } }
         if !mn.isFinite || !mx.isFinite { return (0, 1) }
         if mn == mx { return (mn - 0.5, mx + 0.5) }
         return (mn, mx)
