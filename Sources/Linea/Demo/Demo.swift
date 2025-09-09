@@ -14,7 +14,7 @@ struct Demo: View {
     
     @State private var series: [Ids : LinearSeries] = [
         .sin : .init(
-            points: (0..<200).map { i in .init(x: Double(i), y: 10*(sin(Double(i)/20))) },
+            points: (0..<200).map { i in .init(x: Double(i), y: (10*sin(Double(i)/20)))  },
             style: .init(
                 color: .green,
                 lineWidth: 2
@@ -24,7 +24,7 @@ struct Demo: View {
             points: (0..<200).map { i in .init(x: Double(i), y: 10*(sin(Double(i)/20) + Double.random(in: -0.8...0.8))) },
             style: .init(
                 color: .blue,
-                lineWidth: 2
+                lineWidth: 1
             )
         ),
         .random : .init(
@@ -74,25 +74,22 @@ struct Demo: View {
             LinearGraph(
                 series: setSmoothing(series: series, smooth: smooth),
                 xAxis: XAxis(
-                    autoRange: .none,//padded(frac: 0.01, nice: true),
+                    autoRange: .padded(frac: 0.01, nice: true),
                     tickProvider: NiceTickProvider(),
                 ),
                 yAxes: YAxes(
                     bindings: [
                         AxisBinding(
                             axes: YAxis(
-                                autoRange: .none,
+                                autoRange: .padded(frac: 0.01, nice: true),
                                 tickProvider: NiceTickProvider(),
                                 gridEnabled: true,
                             ),
-                            seriesIds:[.sin, .sinRandom]
+                            seriesIds:[.sinRandom, .sin]
                         ),
                         AxisBinding(
                             axes: YAxis(
-                                autoRange: .none,
-                                tickProvider: NiceTickProvider(),
                                 gridEnabled: false,
-                                labelColor: .red
                             ),
                             seriesIds:[.random]
                         )
