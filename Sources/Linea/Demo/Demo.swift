@@ -80,7 +80,7 @@ struct Demo: View {
                 yAxes: YAxes(
                     bindings: [
                         AxisBinding(
-                            axes: YAxis(
+                            axis: YAxis(
                                 autoRange: .padded(frac: 0.01, nice: true),
                                 tickProvider: NiceTickProvider(),
                                 gridEnabled: true
@@ -88,7 +88,7 @@ struct Demo: View {
                             seriesIds:[.sinRandom, .sin]
                         ),
                         AxisBinding(
-                            axes: YAxis(
+                            axis: YAxis(
                                 gridEnabled: false,
                             ),
                             seriesIds:[.random]

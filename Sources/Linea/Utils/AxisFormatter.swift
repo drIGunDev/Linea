@@ -7,10 +7,12 @@
 
 import SwiftUI
 
+/// AxisFormatter renders tick values to strings (and optional font).
 public protocol AxisFormatter: Sendable {
     func string(for value: Double) -> (String, Font)
 }
 
+/// NumberAxisFormatter supports fixed decimals and optional SI prefixes.
 public struct NumberAxisFormatter: AxisFormatter {
     public init(decimals: Int = 2, useSI: Bool = false) {
         self.decimals = decimals; self.useSI = useSI

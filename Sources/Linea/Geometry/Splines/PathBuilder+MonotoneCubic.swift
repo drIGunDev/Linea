@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+/// PathBuilder converts arrays of points into Path using selected smoothing:
+/// - monotone cubic (no overshoot),
+/// Each method accepts already-mapped view points (CGPoint).
 extension PathBuilder {
     
     // MARK: - Monotone cubic (Fritsch–Carlson): x must be strictly increasing

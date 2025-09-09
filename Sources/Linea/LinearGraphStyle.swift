@@ -7,8 +7,10 @@
 
 import SwiftUI
 
-/// Global/container style (background, grid opacity, corners).
-/// Per-series visuals are configured via `SeriesStyle` on `LinearSeries`.
+/// LinearGraphStyle controls container visuals and axis defaults:
+/// - background, corner radius, grid opacity,
+/// - x/y tick targets and default formatters,
+/// - grid master enable flag.
 public struct LinearGraphStyle: Sendable, Hashable {
     public var gridEnabled: Bool = true
     public var gridOpacity: Double

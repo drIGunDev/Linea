@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+/// PathBuilder converts arrays of points into Path using selected smoothing:
+/// - Beta-spline (sampled),
+/// Each method accepts already-mapped view points (CGPoint).
 extension PathBuilder {
     
     // MARK: - Beta-spline (Barsky) — sampled evaluator

@@ -7,7 +7,8 @@
 
 import Foundation
 
-/// Describes a single plotted series with optional per-series style.
+/// LinearSeries holds raw points and per-series visual style (color, width, smoothing, fill).
+/// Use `LinearSeries.path(sStyle:pts:)` to construct the curve for Canvas drawing.
 public struct LinearSeries: Equatable {
     public var points: [DataPoint]
     public var style: SeriesStyle

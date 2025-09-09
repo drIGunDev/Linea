@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+/// PathBuilder converts arrays of points into Path using selected smoothing:
+/// - Catmull–Rom (uniform; tension),
+/// Each method accepts already-mapped view points (CGPoint).
 extension PathBuilder {
     
     // MARK: - Uniform Catmull–Rom → Cubic Bézier

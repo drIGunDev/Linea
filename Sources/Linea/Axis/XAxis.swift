@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+/// XAxis encapsulates a horizontal axis state:
+/// - scale (min/max + original range + clamping)
+/// - autoRange strategy (none/fixed/tight/padded)
+/// - tick provider + formatter
+/// - grid/labels enable flags
+/// Call `resolveRange(series:targetTicks:resetOriginalRange:)` to compute initial bounds.
 public final class XAxis: Axis {
     public convenience init(
         autoRange: AxisAutoRange = .padded(frac: 0.05, nice: true),

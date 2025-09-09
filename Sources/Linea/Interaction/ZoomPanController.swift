@@ -9,6 +9,9 @@ import SwiftUI
 
 public enum ZoomAxis { case none, x, y, xy }
 
+/// ZoomPanController translates drag/pinch gestures to scale updates.
+/// - `pan(x:y:drag:in:mode:)` applies delta in unit space → value space.
+/// - `pinch(x:y:factor:focus:in:mode:)` zooms around a focus point.
 public final class ZoomPanController {
     public init() {}
 

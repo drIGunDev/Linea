@@ -24,6 +24,9 @@ public enum Smoothing: Equatable {
                      parameterization: BSplineParam = .openUniform)
 }
 
+/// PathBuilder converts arrays of points into Path using selected smoothing:
+/// - line (polyline),
+/// Each method accepts already-mapped view points (CGPoint).
 @usableFromInline
 struct PathBuilder {
     

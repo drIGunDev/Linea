@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+/// YAxis encapsulates a vertical axis state for a group of series.
+/// Axes can be shown on left/right and may disable grid independently.
+/// Use with `YAxes<SeriesId>` to bind series to this axis.
 public final class YAxis: Axis {
     public enum YAxisSide { case left, right }
     

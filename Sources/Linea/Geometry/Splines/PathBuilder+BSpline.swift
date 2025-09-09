@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+/// PathBuilder converts arrays of points into Path using selected smoothing:
+/// - B-spline (de Boor; degree; knot parameterization).
+/// Each method accepts already-mapped view points (CGPoint).
 extension PathBuilder {
     
     // MARK: - B-spline (de Boor) — general degree, optional non-uniform knots

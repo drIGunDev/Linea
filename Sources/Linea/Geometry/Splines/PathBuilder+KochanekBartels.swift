@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+/// PathBuilder converts arrays of points into Path using selected smoothing:
+/// - Kochanek–Bartels (TCB),
+/// Each method accepts already-mapped view points (CGPoint).
 extension PathBuilder {
     
     // MARK: - Kochanek–Bartels (TCB) → Cubic Bézier

@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// - FixedCountTickProvider: exactly N intervals over [min,max].
 public struct FixedCountTickProvider: TickProvider {
     public init() {}
     public func ticks(scale: any AxisScale, target: Int) -> [Tick] {

@@ -7,15 +7,17 @@
 
 import Foundation
 
+/// AxisBinding connects one `YAxis` to a set of series identifiers.
+/// The chart uses these bindings to map each series to its Y space.
 public final class AxisBinding<SeriesID: Hashable> {
     public let axis: YAxis
     public let seriesIds: Set<SeriesID>
     
     public init(
-        axes: YAxis = .init(),
+        axis: YAxis = .init(),
         seriesIds: Set<SeriesID> = []
     ) {
-        self.axis = axes
+        self.axis = axis
         self.seriesIds = seriesIds
     }
 }

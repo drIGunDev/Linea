@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// - NiceTickProvider: “nice” human-friendly steps around target count.
 public struct NiceTickProvider: TickProvider {
     public init() {}
     public func ticks(scale: any AxisScale, target: Int) -> [Tick] {

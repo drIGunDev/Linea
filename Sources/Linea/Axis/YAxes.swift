@@ -7,8 +7,12 @@
 
 import Foundation
 
+/// YAxes binds multiple `YAxis` instances to sets of `SeriesId`.
+/// - `bindings`: list of AxisBinding(axis, seriesIds).
+/// - `foreachAxis`: iterate axes conveniently.
+/// - `resolveRange(series:targetTicks:resetOriginalRange:)`: compute per-axis bounds.
 public final class YAxes<SeriesID: Hashable> {
-    public let bindings: [AxisBinding<SeriesID>]
+    public var bindings: [AxisBinding<SeriesID>]
     
     public init(bindings: [AxisBinding<SeriesID>] = []) {
         if bindings.count == 0 {
@@ -17,6 +21,15 @@ public final class YAxes<SeriesID: Hashable> {
         else {
             self.bindings = bindings
         }
+    }
+    
+    class public func bind(axis: YAxis, to seriesIds: Set<SeriesID>) -> YAxes<SeriesID> {
+        .init(bindings: [.init(axis: axis, seriesIds: seriesIds)])
+    }
+    
+    public func bind(axis: YAxis, to seriesIds: Set<SeriesID>) -> YAxes<SeriesID> {
+        bindings.append(.init(axis: axis, seriesIds: seriesIds))
+        return self
     }
     
     func resolveRange(series: [SeriesID: LinearSeries], targetTicks: Int, resetOriginalRange: Bool = false) {

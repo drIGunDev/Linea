@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+/// LinearScale holds current and original min/max and supports:
+/// - unit mapping (value ↔︎ [0,1]),
+/// - pan/zoom with clamping to original range (if enabled),
+/// - `reset()` to original.
 public protocol AxisScale: AnyObject, Hashable {
     // current visible range
     var min: Double { get set }

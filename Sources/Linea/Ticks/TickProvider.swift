@@ -12,6 +12,7 @@ public struct Tick {
     public let label: String
 }
 
+/// TickProvider returns tick positions for a given scale.
 public protocol TickProvider: Sendable {
     func ticks(scale: any AxisScale, target: Int) -> [Tick]
 }
