@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-public struct LinearGraph<SeriesId: Hashable>: View {
+public struct LinearGraph<SeriesID: Hashable>: View {
     @State private var xAxis: XAxis
-    @State private var yAxes: YAxes<SeriesId>
+    @State private var yAxes: YAxes<SeriesID>
     
     @State private var lastDrag: CGSize = .zero
     @State private var lastPinch: CGFloat = 1
     
-    private let series: [SeriesId: LinearSeries]
+    private let series: [SeriesID: LinearSeries]
     private let style: LinearGraphStyle
     private let controller = ZoomPanController()
     
@@ -24,9 +24,9 @@ public struct LinearGraph<SeriesId: Hashable>: View {
     private let autoRescaleOnSeriesChange: Bool
     
     public init(
-        series: [SeriesId: LinearSeries],
+        series: [SeriesID: LinearSeries],
         xAxis: XAxis = .init(),
-        yAxes: YAxes<SeriesId> = .init(),
+        yAxes: YAxes<SeriesID> = .init(),
         style: LinearGraphStyle = .init(),
         panMode: ZoomAxis = .xy,
         zoomMode: ZoomAxis = .xy,

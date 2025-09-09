@@ -25,7 +25,7 @@ public final class XAxis: Axis {
         )
     }
     
-    public func resolveRange<SeriesId: Hashable>(series: [SeriesId: LinearSeries], targetTicks: Int, resetOriginalRange: Bool = false) {
+    public func resolveRange<SeriesID: Hashable>(series: [SeriesID: LinearSeries], targetTicks: Int, resetOriginalRange: Bool = false) {
         let (min, max) = AutoRanger.dataBoundsX(series: series)
         resolveRange(maxMin: (min, max), targetTicks: targetTicks, resetOriginalRange: resetOriginalRange)
     }

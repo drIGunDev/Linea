@@ -80,7 +80,7 @@ struct Demo: View {
                 series: setSmoothing(series: series, smooth: smooth),
                 xAxis: XAxis(
                     autoRange: .padded(frac: 0.01, nice: true),
-                    tickProvider: NiceTickProvider(),
+                    tickProvider: NiceTickProvider()
                 ),
                 yAxes: YAxes(
                     bindings: [
@@ -94,7 +94,7 @@ struct Demo: View {
                         ),
                         AxisBinding(
                             axes: YAxis(
-                                gridEnabled: false,
+                                gridEnabled: false
                             ),
                             seriesIds:[.random]
                         )

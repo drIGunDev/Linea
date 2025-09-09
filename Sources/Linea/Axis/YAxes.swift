@@ -7,26 +7,26 @@
 
 import Foundation
 
-public final class YAxes<SeriesId: Hashable> {
-    public let bindings: [AxisBinding<SeriesId>]
+public final class YAxes<SeriesID: Hashable> {
+    public let bindings: [AxisBinding<SeriesID>]
     
-    public init(bindings: [AxisBinding<SeriesId>] = []) {
+    public init(bindings: [AxisBinding<SeriesID>] = []) {
         if bindings.count == 0 {
-            self.bindings = [AxisBinding<SeriesId>()]
+            self.bindings = [AxisBinding<SeriesID>()]
         }
         else {
             self.bindings = bindings
         }
     }
     
-    func resolveRange(series: [SeriesId: LinearSeries], targetTicks: Int, resetOriginalRange: Bool = false) {
+    func resolveRange(series: [SeriesID: LinearSeries], targetTicks: Int, resetOriginalRange: Bool = false) {
         func resolveRange(axis: YAxis, seriesArray: [LinearSeries]) {
             guard !seriesArray.isEmpty else { return }
             let (ymin, ymax) = AutoRanger.dataBoundsY(seriesArray: seriesArray)
             axis.resolveRange(maxMin: (ymin, ymax), targetTicks: targetTicks, resetOriginalRange: resetOriginalRange)
         }
         
-        func setAxis(axis: YAxis, seriesIds: Set<SeriesId>) {
+        func setAxis(axis: YAxis, seriesIds: Set<SeriesID>) {
             
             if seriesIds.isEmpty {
                 let seriesesArray = Array(series.values)
@@ -46,7 +46,7 @@ public final class YAxes<SeriesId: Hashable> {
         
         if bindings.isEmpty {
             let axis = YAxis()
-            let seriesIds: Set<SeriesId> = Set(series.keys)
+            let seriesIds: Set<SeriesID> = Set(series.keys)
             setAxis(axis: axis, seriesIds: seriesIds)
             return
         }

@@ -7,13 +7,13 @@
 
 import Foundation
 
-public final class AxisBinding<SeriesId: Hashable> {
+public final class AxisBinding<SeriesID: Hashable> {
     public let axis: YAxis
-    public let seriesIds: Set<SeriesId>
+    public let seriesIds: Set<SeriesID>
     
     public init(
         axes: YAxis = .init(),
-        seriesIds: Set<SeriesId> = []
+        seriesIds: Set<SeriesID> = []
     ) {
         self.axis = axes
         self.seriesIds = seriesIds
