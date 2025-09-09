@@ -130,3 +130,10 @@ struct Demo3_Previews: PreviewProvider {
 - **Smoothing options** — Catmull-Rom, Monotone cubic, Kochanek–Bartels (TCB), Beta-spline, B-spline.  
 - **Gestures** — pan & pinch zoom (can be disabled).  
 - **Per-series styling** — color, width, opacity, dashed lines, optional fill.  
+
+## Credits
+
+Author: Igor Gun  
+Assistant: ChatGPT (AI)  
+
+This project is an experiment in human–AI co-development.
