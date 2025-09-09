@@ -119,13 +119,14 @@ struct Demo3_Previews: PreviewProvider {
         Demo3()
     }
 }
-````
+```
 👉 A green quadratic curve with fixed bounds and no interaction.
 
-⚙️ Features
-    •    Multiple Y axes — bind different series to different vertical scales (left/right).
-    •    Flexible ranges — tight, padded, or fixed.
-    •    Custom tick providers — use built-in NiceTickProvider or FixedCountTickProvider, or define your own.
-    •    Smoothing options — Catmull-Rom, Monotone cubic, Kochanek–Bartels (TCB), Beta-spline, B-spline.
-    •    Gestures — pan & pinch zoom (can be disabled).
-    •    Per-series styling — color, width, opacity, dashed lines, optional fill.
+## ⚙️ Features
+
+- **Multiple Y axes** — bind different series to different vertical scales (left/right).  
+- **Flexible ranges** — `tight`, `padded`, or `fixed`.  
+- **Custom tick providers** — use built-in `NiceTickProvider` or `FixedCountTickProvider`, or define your own.  
+- **Smoothing options** — Catmull-Rom, Monotone cubic, Kochanek–Bartels (TCB), Beta-spline, B-spline.  
+- **Gestures** — pan & pinch zoom (can be disabled).  
+- **Per-series styling** — color, width, opacity, dashed lines, optional fill.  
