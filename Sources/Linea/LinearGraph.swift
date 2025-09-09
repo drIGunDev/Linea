@@ -3,9 +3,8 @@
 //  Linea
 //
 //  Created by Igor Gun on 02.09.25.
-//
+//  Assistant: ChatGPT (AI)  
 
-import SwiftUI
 import SwiftUI
 
 /// A flexible, high-performance SwiftUI line chart that supports:
@@ -15,7 +14,7 @@ import SwiftUI
 /// - configurable pan/zoom modes,
 /// - pluggable tick providers and formatters (via axes).
 ///
-/// `SeriesId` is generic and must be `Hashable` (e.g. `enum`, `String`, `UUID`).
+/// `SeriesID` is generic and must be `Hashable` (e.g. `enum`, `String`, `UUID`).
 public struct LinearGraph<SeriesID: Hashable>: View {
     /// Current X axis state (scale, tick provider, formatter, grid flag, etc.).
     @State private var xAxis: XAxis
@@ -251,7 +250,7 @@ private extension LinearGraph {
                                     y: size.height * CGFloat(1 - yAxis.scale.toUnit(p.y)))
                         }
                         // Build path according to smoothing mode
-                        let path = LinearSeries.path(sStyle: sStyle, pts: pts)
+                        let path = LinearSeries.buildPath(sStyle: sStyle, pts: pts)
 
                         var stroke = StrokeStyle(lineWidth: sStyle.lineWidth, lineCap: .round, lineJoin: .round)
                         if let dash = sStyle.dash {

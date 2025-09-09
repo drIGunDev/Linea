@@ -3,7 +3,7 @@
 //  Linea
 //
 //  Created by Igor Gun on 02.09.25.
-//
+//  Assistant: ChatGPT (AI)
 
 import SwiftUI
 
@@ -15,7 +15,13 @@ public enum ZoomAxis { case none, x, y, xy }
 public final class ZoomPanController {
     public init() {}
 
-    public func pan(x: any AxisScale, y: (any AxisScale)?, drag: CGSize, in size: CGSize, mode: ZoomAxis = .xy) {
+    public func pan(
+        x: any AxisScale,
+        y: (any AxisScale)?,
+        drag: CGSize,
+        in size: CGSize,
+        mode: ZoomAxis = .xy
+    ) {
         if size.width > 1, mode != .y {
             let dxu = Double(drag.width / size.width)
             let dxv = -(x.max - x.min) * dxu
@@ -28,7 +34,14 @@ public final class ZoomPanController {
         }
     }
 
-    public func pinch(x: any AxisScale, y: (any AxisScale)?, factor: CGFloat, focus: CGPoint, in size: CGSize, mode: ZoomAxis = .xy) {
+    public func pinch(
+        x: any AxisScale,
+        y: (any AxisScale)?,
+        factor: CGFloat,
+        focus: CGPoint,
+        in size: CGSize,
+        mode: ZoomAxis = .xy
+    ) {
         let fx = Double(focus.x / max(size.width, 1))
         let fy = Double(1 - focus.y / max(size.height, 1))
         if mode != .y {

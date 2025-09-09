@@ -3,7 +3,7 @@
 //  Linea
 //
 //  Created by Igor Gun on 02.09.25.
-//
+//  Assistant: ChatGPT (AI)
 
 import Foundation
 

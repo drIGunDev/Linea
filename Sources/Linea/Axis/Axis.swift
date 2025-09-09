@@ -3,7 +3,7 @@
 //  Linea
 //
 //  Created by Igor Gun on 08.09.25.
-//
+//  Assistant: ChatGPT (AI)
 
 import SwiftUI
 
@@ -31,7 +31,11 @@ public class Axis {
         self.labelColor = labelColor
     }
     
-    func resolveRange(maxMin: (Double, Double), targetTicks: Int, resetOriginalRange: Bool = false) {
+    func resolveRange(
+        maxMin: (Double, Double),
+        targetTicks: Int,
+        resetOriginalRange: Bool = false
+    ) {
         let minMax = Self.resolveRange(range: autoRange, raw: maxMin, targetTicks: targetTicks)
         scale.min = minMax.0
         scale.max = minMax.1

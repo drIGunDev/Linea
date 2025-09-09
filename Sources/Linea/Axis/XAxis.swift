@@ -3,7 +3,7 @@
 //  Linea
 //
 //  Created by Igor Gun on 06.09.25.
-//
+//  Assistant: ChatGPT (AI)
 
 import SwiftUI
 

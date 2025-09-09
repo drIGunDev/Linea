@@ -3,7 +3,7 @@
 //  Linea
 //
 //  Created by Igor Gun on 08.09.25.
-//
+//  Assistant: ChatGPT (AI)
 
 import Foundation
 
@@ -32,7 +32,11 @@ public final class YAxes<SeriesID: Hashable> {
         return self
     }
     
-    func resolveRange(series: [SeriesID: LinearSeries], targetTicks: Int, resetOriginalRange: Bool = false) {
+    func resolveRange(
+        series: [SeriesID: LinearSeries],
+        targetTicks: Int,
+        resetOriginalRange: Bool = false
+    ) {
         func resolveRange(axis: YAxis, seriesArray: [LinearSeries]) {
             guard !seriesArray.isEmpty else { return }
             let (ymin, ymax) = AutoRanger.dataBoundsY(seriesArray: seriesArray)
@@ -40,7 +44,6 @@ public final class YAxes<SeriesID: Hashable> {
         }
         
         func setAxis(axis: YAxis, seriesIds: Set<SeriesID>) {
-            
             if seriesIds.isEmpty {
                 let seriesesArray = Array(series.values)
                 guard seriesesArray.count > 0 else { return }

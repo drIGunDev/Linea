@@ -5,6 +5,24 @@ It supports multiple Y axes, per-series styling, zoom & pan gestures, and custom
 
 ---
 
+## ⚙️ Features
+
+- **Multiple Y axes** — bind different series to different vertical scales (left/right).  
+- **Flexible ranges** — `tight`, `padded`, or `fixed`.  
+- **Custom tick providers** — use built-in `NiceTickProvider` or `FixedCountTickProvider`, or define your own.  
+- **Smoothing options** — Catmull-Rom, Monotone cubic, Kochanek–Bartels (TCB), Beta-spline, B-spline.  
+- **Gestures** — pan & pinch zoom (can be disabled).  
+- **Per-series styling** — color, width, opacity, dashed lines, optional fill.  
+
+## Credits
+
+Author: Igor Gun  
+Assistant: ChatGPT (AI)  
+
+This project is an experiment in human–AI co-development.
+
+---
+
 ## 🚀 Installation
 
 Add **Linea** to your project using **Swift Package Manager (SPM):**
@@ -121,19 +139,3 @@ struct Demo3_Previews: PreviewProvider {
 }
 ```
 👉 A green quadratic curve with fixed bounds and no interaction.
-
-## ⚙️ Features
-
-- **Multiple Y axes** — bind different series to different vertical scales (left/right).  
-- **Flexible ranges** — `tight`, `padded`, or `fixed`.  
-- **Custom tick providers** — use built-in `NiceTickProvider` or `FixedCountTickProvider`, or define your own.  
-- **Smoothing options** — Catmull-Rom, Monotone cubic, Kochanek–Bartels (TCB), Beta-spline, B-spline.  
-- **Gestures** — pan & pinch zoom (can be disabled).  
-- **Per-series styling** — color, width, opacity, dashed lines, optional fill.  
-
-## Credits
-
-Author: Igor Gun  
-Assistant: ChatGPT (AI)  
-
-This project is an experiment in human–AI co-development.

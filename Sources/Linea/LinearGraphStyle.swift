@@ -3,7 +3,7 @@
 //  Linea
 //
 //  Created by Igor Gun on 02.09.25.
-//
+//  Assistant: ChatGPT (AI)
 
 import SwiftUI
 
@@ -22,7 +22,7 @@ public struct LinearGraphStyle: Sendable, Hashable {
     public init(
         gridEnabled: Bool = true,
         gridOpacity: Double = 0.12,
-        cornerRadius: CGFloat = 12,
+        cornerRadius: CGFloat = 10,
         background: some ShapeStyle = .thinMaterial,
         xTickTarget: Int = 6,
         yTickTarget: Int = 5
