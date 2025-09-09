@@ -10,46 +10,54 @@ import Foundation
 public final class YAxes<SeriesId: Hashable> {
     public let bindings: [AxisBinding<SeriesId>]
     
-    public init(bindings: [AxisBinding<SeriesId>] = .init()) {
-        self.bindings = bindings
+    public init(bindings: [AxisBinding<SeriesId>] = []) {
+        if bindings.count == 0 {
+            self.bindings = [AxisBinding<SeriesId>()]
+        }
+        else {
+            self.bindings = bindings
+        }
     }
     
-    func setRanges(series: [SeriesId: LinearSeries], targetTicks: Int) {
-        func resolveRange(axisSeries: [LinearSeries], axis: YAxis) {
-            guard !axisSeries.isEmpty else { return }
-            let (ymin, ymax) = AutoRanger.dataBoundsY(series: axisSeries)
-            axis.resolveRange(maxMin: (ymin, ymax), targetTicks: targetTicks)
+    func resolveRange(series: [SeriesId: LinearSeries], targetTicks: Int, resetOriginalRange: Bool = false) {
+        func resolveRange(axis: YAxis, seriesArray: [LinearSeries]) {
+            guard !seriesArray.isEmpty else { return }
+            let (ymin, ymax) = AutoRanger.dataBoundsY(seriesArray: seriesArray)
+            axis.resolveRange(maxMin: (ymin, ymax), targetTicks: targetTicks, resetOriginalRange: resetOriginalRange)
         }
         
-        guard !bindings.isEmpty else { return }
-    
-        for binding in bindings {
-            let axis = binding.axis
-            var axisSeries: [LinearSeries] = []
-            if binding.seriesIds.isEmpty {
-                axisSeries = Array(series.values)
-                resolveRange(axisSeries: axisSeries, axis: axis)
+        func setAxis(axis: YAxis, seriesIds: Set<SeriesId>) {
+            
+            if seriesIds.isEmpty {
+                let seriesesArray = Array(series.values)
+                guard seriesesArray.count > 0 else { return }
+                
+                resolveRange(axis: axis, seriesArray: seriesesArray)
             }
             else {
-                for id in binding.seriesIds {
+                var seriesesArray: [LinearSeries] = []
+                for id in seriesIds {
                     guard let s = series[id] else { continue }
-                    axisSeries.append(s)
+                    seriesesArray.append(s)
                 }
-                resolveRange(axisSeries: axisSeries, axis: axis)
+                resolveRange(axis: axis, seriesArray: seriesesArray)
             }
+        }
+        
+        if bindings.isEmpty {
+            let axis = YAxis()
+            let seriesIds: Set<SeriesId> = Set(series.keys)
+            setAxis(axis: axis, seriesIds: seriesIds)
+            return
+        }
+        
+        for binding in bindings {
+            let axis = binding.axis
+            setAxis(axis: axis, seriesIds: binding.seriesIds)
         }
     }
     
     func foreachAxis(_ body: (Axis) -> Void) {
-        for binding in bindings {
-            body(binding.axis)
-        }
+        bindings.forEach { body($0.axis) }
     }
-    
-    func foreachScale(_ body: (LinearScale) -> Void) {
-        for binding in bindings {
-            body(binding.axis.scale)
-        }
-    }
-
 }

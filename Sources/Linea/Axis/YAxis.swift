@@ -17,7 +17,7 @@ public final class YAxis: Axis {
         autoRange: AxisAutoRange = .padded(frac: 0.05, nice: true),
         tickProvider: any TickProvider = NiceTickProvider(),
         formatter: any AxisFormatter = NumberAxisFormatter(decimals: 2),
-        labelingEnabled: Bool = true,
+        gridEnabled: Bool = true,
         labelColor: Color? = nil
     ) {
         self.side = side
@@ -25,7 +25,9 @@ public final class YAxis: Axis {
             scale: .init(min: 0, max: 0),
             autoRange: autoRange,
             tickProvider: tickProvider,
-            formatter: formatter
+            formatter: formatter,
+            gridEnabled: gridEnabled,
+            labelColor: labelColor
         )
     }
 }

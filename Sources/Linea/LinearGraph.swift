@@ -26,41 +26,24 @@ public struct LinearGraph<SeriesId: Hashable>: View {
     public init(
         series: [SeriesId: LinearSeries],
         xAxis: XAxis = .init(),
-        xAxes: YAxes<SeriesId> = .init(),
+        yAxes: YAxes<SeriesId> = .init(),
         style: LinearGraphStyle = .init(),
         panMode: ZoomAxis = .xy,
         zoomMode: ZoomAxis = .xy,
         autoRescaleOnSeriesChange: Bool = true
     ) {
         self.series = series
-        self.yAxes = xAxes
+        self.yAxes = yAxes
         self.style = style
         self.panMode = panMode
         self.zoomMode = zoomMode
         self.autoRescaleOnSeriesChange = autoRescaleOnSeriesChange
         
-        xAxis.setRange(series: series, targetTicks: style.xTickTarget)
+        xAxis.resolveRange(series: series, targetTicks: style.xTickTarget, resetOriginalRange: true)
         self._xAxis = State(initialValue: xAxis)
         
-        yAxes.setRanges(series: series, targetTicks: style.yTickTarget)
+        yAxes.resolveRange(series: series, targetTicks: style.yTickTarget, resetOriginalRange: true)
         self._yAxes = State(initialValue: yAxes)
-        
-//        let yScale = LinearScale(min: yr.0, max: yr.1)
-//        yScale.setOriginalRange(min: yr.0, max: yr.1); yScale.clampToOriginal = true
-//        self._yAxes = State(initialValue: yScale)
-
-//        // compute scales from data
-//        let (xmin, xmax) = AutoRanger.dataBoundsX(series: series)
-//        let (ymin, ymax) = AutoRanger.dataBoundsY(series: series)
-//        let xr = resolveRange(axis: xAuto, raw: (xmin, xmax), targetTicks: style.xTickTarget)
-//        let yr = resolveRange(axis: yAuto, raw: (ymin, ymax), targetTicks: style.yTickTarget)
-//        
-//        let xs = LinearScale(min: xr.0, max: xr.1)
-//        let ys = LinearScale(min: yr.0, max: yr.1)
-//        xs.setOriginalRange(min: xr.0, max: xr.1); xs.clampToOriginal = true
-//        ys.setOriginalRange(min: yr.0, max: yr.1); ys.clampToOriginal = true
-//        self._x = State(initialValue: xs)
-//        self._y = State(initialValue: ys)
     }
     
     public var body: some View {
@@ -78,8 +61,8 @@ public struct LinearGraph<SeriesId: Hashable>: View {
                         .onChanged { value in
                             let delta = CGSize(width: value.translation.width - lastDrag.width,
                                                height: value.translation.height - lastDrag.height)
-                            yAxes.foreachScale { y in
-                                controller.pan(x: xAxis.scale, y: y, drag: delta, in: geo.size, mode: panMode)
+                            yAxes.foreachAxis { yAxis in
+                                controller.pan(x: xAxis.scale, y: yAxis.scale, drag: delta, in: geo.size, mode: panMode)
                             }
                             lastDrag = value.translation
                         }
@@ -92,8 +75,8 @@ public struct LinearGraph<SeriesId: Hashable>: View {
                         .onChanged { scale in
                             let factor = scale / max(0.001, lastPinch)
                             let focus = CGPoint(x: geo.size.width/2, y: geo.size.height/2)
-                            yAxes.foreachScale { y in
-                                controller.pinch(x: xAxis.scale, y: y, factor: factor, focus: focus, in: geo.size, mode: zoomMode)
+                            yAxes.foreachAxis { yAxis in
+                                controller.pinch(x: xAxis.scale, y: yAxis.scale, factor: factor, focus: focus, in: geo.size, mode: zoomMode)
                             }
                             lastPinch = scale
                         }
@@ -105,23 +88,17 @@ public struct LinearGraph<SeriesId: Hashable>: View {
                     TapGesture(count: 2)
                         .onEnded { _ in
                             xAxis.scale.reset()
-                            yAxes.foreachScale { y in
-                                y.reset()
-                                controller.pan(x: xAxis.scale, y: y, drag: .zero, in: geo.size, mode: .xy)
+                            yAxes.foreachAxis { yAxis in
+                                yAxis.scale.reset()
+                                controller.pan(x: xAxis.scale, y: yAxis.scale, drag: .zero, in: geo.size, mode: .xy)
                             }
                         }
                 )
             }
             .onChange(of: series, initial: true) { _, newValue in
                 guard autoRescaleOnSeriesChange else { return }
-                xAxis.setRange(series: newValue, targetTicks: style.xTickTarget)
-                yAxes.setRanges(series: newValue, targetTicks: style.yTickTarget)
-//                let (xmin, xmax) = AutoRanger.dataBoundsX(series: newValue)
-//                let (ymin, ymax) = AutoRanger.dataBoundsY(series: newValue)
-//                let xr = resolveRange(axis: xAuto, raw: (xmin, xmax), targetTicks: style.xTickTarget)
-//                let yr = resolveRange(axis: yAuto, raw: (ymin, ymax), targetTicks: style.yTickTarget)
-//                x.min = xr.0; x.max = xr.1; x.setOriginalRange(min: xr.0, max: xr.1)
-//                y.min = yr.0; y.max = yr.1; y.setOriginalRange(min: yr.0, max: yr.1)
+                xAxis.resolveRange(series: newValue, targetTicks: style.xTickTarget)
+                yAxes.resolveRange(series: newValue, targetTicks: style.yTickTarget)
             }
         }
     }
@@ -134,24 +111,34 @@ private extension LinearGraph {
         Canvas {
             ctx,
             size in
-            let xt = xAxis.tickProvider.ticks(scale: xAxis.scale, target: style.xTickTarget)
-            yAxes.foreachAxis { y in
-                let yt = y.tickProvider.ticks(scale: y.scale, target: style.yTickTarget)
-                var grid = Path()
+            
+            guard style.gridEnabled else { return }
+            
+            var grid = Path()
+            
+            if xAxis.gridEnabled {
+                let xt = xAxis.tickProvider.ticks(scale: xAxis.scale, target: style.xTickTarget)
                 for t in xt {
                     let u = xAxis.scale.toUnit(t.value)
                     let X = size.width * CGFloat(u)
                     grid.move(to: .init(x: X, y: 0))
                     grid.addLine(to: .init(x: X, y: size.height))
                 }
+            }
+
+            yAxes.foreachAxis { yAxis in
+                guard yAxis.gridEnabled else { return }
+                
+                let yt = yAxis.tickProvider.ticks(scale: yAxis.scale, target: style.yTickTarget)
                 for t in yt {
-                    let u = y.scale.toUnit(t.value)
+                    let u = yAxis.scale.toUnit(t.value)
                     let Y = size.height * (1 - CGFloat(u))
                     grid.move(to: .init(x: 0, y: Y))
                     grid.addLine(to: .init(x: size.width, y: Y))
                 }
-                ctx.stroke(grid, with: .color(.secondary.opacity(style.gridOpacity)), lineWidth: 0.5)
             }
+            
+            ctx.stroke(grid, with: .color(.secondary.opacity(style.gridOpacity)), lineWidth: 0.5)
         }
         .clipShape(RoundedRectangle(cornerRadius: style.cornerRadius))
     }
@@ -162,26 +149,38 @@ private extension LinearGraph {
             ctx,
             size in
             
-            let xt = xAxis.tickProvider.ticks(scale: xAxis.scale, target: style.xTickTarget)
-            yAxes.foreachAxis { y in
-                let yt = y.tickProvider.ticks(scale: y.scale, target: style.yTickTarget)
-                
+            guard style.gridEnabled else { return }
+            
+            if xAxis.gridEnabled {
+                let xt = xAxis.tickProvider.ticks(scale: xAxis.scale, target: style.xTickTarget)
                 for (index, t) in xt.enumerated() {
                     let u = xAxis.scale.toUnit(t.value)
                     let X = size.width * CGFloat(u)
                     let (textValue, font) = xAxis.formatter.string(for: t.value)
-                    let text = Text(textValue).font(font)
+                    var text = Text(textValue).font(font)
+                    if let color = xAxis.labelColor {
+                        text = text.foregroundColor(color)
+                    }
                     ctx.draw(
                         text,
                         at: CGPoint(x: X + (index == 0 ? 2 : -2), y: size.height - 2),
                         anchor: index == 0 ? .bottomLeading : .bottomTrailing
                     )
                 }
+            }
+            
+            yAxes.foreachAxis { yAxis in
+                guard yAxis.gridEnabled else { return }
+                
+                let yt = yAxis.tickProvider.ticks(scale: yAxis.scale, target: style.yTickTarget)
                 for t in yt {
-                    let u = y.scale.toUnit(t.value)
+                    let u = yAxis.scale.toUnit(t.value)
                     let Y = size.height * (1 - CGFloat(u))
-                    let (textValue, font) = y.formatter.string(for: t.value)
-                    let text = Text(textValue).font(font)
+                    let (textValue, font) = yAxis.formatter.string(for: t.value)
+                    var text = Text(textValue).font(font)
+                    if let color = yAxis.labelColor {
+                        text = text.foregroundColor(color)
+                    }
                     ctx.draw(text, at: CGPoint(x: 4, y: Y + 2), anchor: .topLeading)
                 }
             }
@@ -192,48 +191,32 @@ private extension LinearGraph {
     func drawLines() -> some View {
         // Series lines (per-series styles)
         Canvas { ctx, size in
-            for s in series.values {
-                yAxes.foreachAxis { y in
-                    let sStyle = s.style 
+            yAxes.bindings.forEach { binding in
+                let yAxis = binding.axis
+                for id in binding.seriesIds {
                     
-                    // inside the Canvas drawing of series in LinearGraph
-                    let pts: [CGPoint] = s.points.map { p in
-                        CGPoint(x: size.width * CGFloat(xAxis.scale.toUnit(p.x)),
-                                y: size.height * CGFloat(1 - y.scale.toUnit(p.y)))
-                    }
-                    
-                    let path: Path
-                    switch sStyle.smoothing {
-                    case .none:
-                        path = PathBuilder.linePath(points: pts)
-                    case let .catmullRom(tension):
-                        path = PathBuilder.catmullRomUniform(points: pts, tension: tension)
-                    case .monotoneCubic:
-                        // ensure xs are strictly increasing
-                        let xs = pts.map { $0.x }, ys = pts.map { $0.y }
-                        path = PathBuilder.monotoneCubic(xs: xs, ys: ys)
-                    case let .tcb(t, b, c):
-                        path = PathBuilder.kochanekBartels(points: pts, tension: t, bias: b, continuity: c)
-                    case let .betaSpline(bias, tension, samples):
-                        path = PathBuilder.betaSplineSampled(points: pts, bias: bias, tension: tension, samplesPerSegment: samples)
-                    case .bSpline(let degree, let knots, let samples, let param):
-                        path = PathBuilder.bSplinePath(control: pts,
-                                                       degree: max(1, degree),
-                                                       knots: knots,
-                                                       samplesPerSpan: samples,
-                                                       parameterization: param)
-                    }
-                    
-                    var stroke = StrokeStyle(lineWidth: sStyle.lineWidth, lineCap: .round, lineJoin: .round)
-                    if let dash = sStyle.dash { stroke = StrokeStyle(lineWidth: sStyle.lineWidth, lineCap: .round, lineJoin: .round, dash: dash) }
-                    ctx.stroke(path, with: .color(sStyle.color.opacity(sStyle.opacity)), style: stroke)
-                    
-                    if let fillColor = sStyle.fill {
-                        var fill = path
-                        fill.addLine(to: CGPoint(x: size.width, y: size.height))
-                        fill.addLine(to: CGPoint(x: 0, y: size.height))
-                        fill.closeSubpath()
-                        ctx.fill(fill, with: .color(fillColor.opacity(max(0, sStyle.opacity - 0.3))))
+                    if let s = series[id] {
+                        
+                        let sStyle = s.style
+                        
+                        let pts: [CGPoint] = s.points.map { p in
+                            CGPoint(x: size.width * CGFloat(xAxis.scale.toUnit(p.x)),
+                                    y: size.height * CGFloat(1 - yAxis.scale.toUnit(p.y)))
+                        }
+                        
+                        let path = LinearSeries.path(sStyle: sStyle, pts: pts)
+                        
+                        var stroke = StrokeStyle(lineWidth: sStyle.lineWidth, lineCap: .round, lineJoin: .round)
+                        if let dash = sStyle.dash { stroke = StrokeStyle(lineWidth: sStyle.lineWidth, lineCap: .round, lineJoin: .round, dash: dash) }
+                        ctx.stroke(path, with: .color(sStyle.color.opacity(sStyle.opacity)), style: stroke)
+                        
+                        if let fillColor = sStyle.fill {
+                            var fill = path
+                            fill.addLine(to: CGPoint(x: size.width, y: size.height))
+                            fill.addLine(to: CGPoint(x: 0, y: size.height))
+                            fill.closeSubpath()
+                            ctx.fill(fill, with: .color(fillColor.opacity(max(0, sStyle.opacity - 0.3))))
+                        }
                     }
                 }
             }

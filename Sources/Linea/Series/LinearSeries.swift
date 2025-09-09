@@ -19,7 +19,6 @@ public struct LinearSeries: Equatable {
     }
     
     public static func == (lhs: LinearSeries, rhs: LinearSeries) -> Bool {
-        lhs.points == rhs.points &&
-        lhs.style == rhs.style
+        lhs.points.count == rhs.points.count 
     }
 }

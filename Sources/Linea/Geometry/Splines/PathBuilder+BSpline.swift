@@ -4,6 +4,7 @@
 //
 //  Created by Igor Gun on 04.09.25.
 //
+
 import SwiftUI
 
 extension PathBuilder {

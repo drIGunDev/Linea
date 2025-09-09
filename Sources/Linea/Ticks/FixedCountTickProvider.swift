@@ -8,6 +8,7 @@
 import Foundation
 
 public struct FixedCountTickProvider: TickProvider {
+    public init() {}
     public func ticks(scale: any AxisScale, target: Int) -> [Tick] {
         let a = scale.min, b = scale.max
         guard b > a else { return [] }

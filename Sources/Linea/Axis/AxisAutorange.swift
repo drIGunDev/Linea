@@ -23,9 +23,9 @@ public struct AutoRanger {
         return (mn, mx)
     }
     
-    public static func dataBoundsY(series: [LinearSeries]) -> (min: Double, max: Double) {
+    public static func dataBoundsY(seriesArray: [LinearSeries]) -> (min: Double, max: Double) {
         var mn = Double.infinity, mx = -Double.infinity
-        for s in series { for p in s.points { mn = min(mn, p.y); mx = max(mx, p.y) } }
+        for s in seriesArray { for p in s.points { mn = min(mn, p.y); mx = max(mx, p.y) } }
         if !mn.isFinite || !mx.isFinite { return (0, 1) }
         if mn == mx { return (mn - 0.5, mx + 0.5) }
         return (mn, mx)

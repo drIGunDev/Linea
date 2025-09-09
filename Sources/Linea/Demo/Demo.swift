@@ -9,31 +9,34 @@ import SwiftUI
 
 struct Demo: View {
     enum Ids: Int {
-        case sin, random
+        case sin, sinRandom, random
     }
     
-    @State private var series: [Ids : LinearSeries] = [.sin :
-            .init(
-                points: (0..<200).map { i in .init(x: Double(i), y: 1*(sin(Double(i)/20) + Double.random(in: -0.8...0.8)))
-                },
-                style: .init(
-                    color: .blue,
-                    lineWidth: 2
-                )
-            ),
-                                                       .random :
-            .init(
-                points: (0..<200).map {
-                    i in .init(x: Double(i), y: Double.random(in: -0.8...0.8))
-                },
-                style: .init(
-                    color: .red,
-                    lineWidth: 1,
-                    opacity: 0.7,
-                    dash: [4,3],
-                    smoothing: .none
-                )
+    @State private var series: [Ids : LinearSeries] = [
+        .sin : .init(
+            points: (0..<200).map { i in .init(x: Double(i), y: 10*(sin(Double(i)/20))) },
+            style: .init(
+                color: .green,
+                lineWidth: 2
             )
+        ),
+        .sinRandom : .init(
+            points: (0..<200).map { i in .init(x: Double(i), y: 10*(sin(Double(i)/20) + Double.random(in: -0.8...0.8))) },
+            style: .init(
+                color: .blue,
+                lineWidth: 2
+            )
+        ),
+        .random : .init(
+            points: (0..<200).map { i in .init(x: Double(i), y: Double.random(in: -0.8...0.8))},
+            style: .init(
+                color: .red,
+                lineWidth: 1,
+                opacity: 0.7,
+                dash: [4,3],
+                smoothing: .none
+            )
+        )
     ]
     
     @State private var smoothingIndex: Int = 0
@@ -71,16 +74,36 @@ struct Demo: View {
             LinearGraph(
                 series: setSmoothing(series: series, smooth: smooth),
                 xAxis: XAxis(
-                    autoRange: .padded(frac: 0.01, nice: true),
-                    tickProvider: NiceTickProvider()
+                    autoRange: .none,//padded(frac: 0.01, nice: true),
+                    tickProvider: NiceTickProvider(),
                 ),
-                
+                yAxes: YAxes(
+                    bindings: [
+                        AxisBinding(
+                            axes: YAxis(
+                                autoRange: .none,
+                                tickProvider: NiceTickProvider(),
+                                gridEnabled: true,
+                            ),
+                            seriesIds:[.sin, .sinRandom]
+                        ),
+                        AxisBinding(
+                            axes: YAxis(
+                                autoRange: .none,
+                                tickProvider: NiceTickProvider(),
+                                gridEnabled: false,
+                                labelColor: .red
+                            ),
+                            seriesIds:[.random]
+                        )
+                    ],
+                ),
                 style: .init(
                     gridOpacity: 0.9,
                     cornerRadius: 5,
                     background: .gray.opacity(0.2),
-                    xTickTarget: 2,
-                    yTickTarget: 4
+                    xTickTarget: 3,
+                    yTickTarget: 3
                 ),
                 panMode: .x,
                 zoomMode: .x,

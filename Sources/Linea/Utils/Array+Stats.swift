@@ -7,7 +7,7 @@
 
 import Foundation
 
-public extension Array where Element == Double {
+extension Array where Element == Double {
     func minMax() -> (Double, Double) {
         guard let f = self.first else { return (0, 1) }
         var mn = f, mx = f

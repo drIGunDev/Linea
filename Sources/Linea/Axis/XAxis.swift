@@ -12,19 +12,21 @@ public final class XAxis: Axis {
         autoRange: AxisAutoRange = .padded(frac: 0.05, nice: true),
         tickProvider: any TickProvider = NiceTickProvider(),
         formatter: any AxisFormatter = NumberAxisFormatter(decimals: 2),
-        labelingEnabled: Bool = true,
+        gridEnabled: Bool = true,
         labelColor: Color? = nil
     ) {
         self.init(
             scale: .init(min: 0, max: 0),
             autoRange: autoRange,
             tickProvider: tickProvider,
-            formatter: formatter
+            formatter: formatter,
+            gridEnabled: gridEnabled,
+            labelColor: labelColor
         )
     }
     
-    public func setRange<SeriesId: Hashable>(series: [SeriesId: LinearSeries], targetTicks: Int) {
+    public func resolveRange<SeriesId: Hashable>(series: [SeriesId: LinearSeries], targetTicks: Int, resetOriginalRange: Bool = false) {
         let (min, max) = AutoRanger.dataBoundsX(series: series)
-        resolveRange(maxMin: (min, max), targetTicks: targetTicks)
+        resolveRange(maxMin: (min, max), targetTicks: targetTicks, resetOriginalRange: resetOriginalRange)
     }
 }

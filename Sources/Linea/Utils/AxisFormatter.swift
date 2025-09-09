@@ -5,7 +5,6 @@
 //  Created by Igor Gun on 05.09.25.
 //
 
-import Foundation
 import SwiftUI
 
 public protocol AxisFormatter: Sendable {

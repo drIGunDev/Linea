@@ -4,6 +4,7 @@
 //
 //  Created by Igor Gun on 02.09.25.
 //
+
 import SwiftUI
 
 public protocol AxisScale: AnyObject, Hashable {

@@ -12,34 +12,32 @@ public class Axis {
     public let autoRange: AxisAutoRange
     public let tickProvider: any TickProvider
     public let formatter: any AxisFormatter
-    
+    public let gridEnabled: Bool
+    public let labelColor: Color?
+
     public init(
         scale: LinearScale,
         autoRange: AxisAutoRange = .padded(frac: 0.05, nice: true),
         tickProvider: any TickProvider = NiceTickProvider(),
         formatter: any AxisFormatter = NumberAxisFormatter(decimals: 2),
-        labelingEnabled: Bool = true,
+        gridEnabled: Bool = true,
         labelColor: Color? = nil
     ) {
         self.scale = scale
         self.autoRange = autoRange
         self.tickProvider = tickProvider
         self.formatter = formatter
+        self.gridEnabled = gridEnabled
+        self.labelColor = labelColor
     }
     
-    func resolveRange(maxMin: (Double, Double), targetTicks: Int) {
-        let xr = Self.resolveRange(range: autoRange, raw: maxMin, targetTicks: targetTicks)
-        setMinMax(xr.0, xr.1)
-        setOriginalMinMax(xr.0, xr.1)
-    }
-    
-    private func setMinMax(_ min: Double, _ max: Double) {
-        scale.min = min
-        scale.max = max
-    }
-    
-    private func setOriginalMinMax(_ min: Double, _ max: Double) {
-        scale.setOriginalRange(min: min, max: max)
+    func resolveRange(maxMin: (Double, Double), targetTicks: Int, resetOriginalRange: Bool = false) {
+        let minMax = Self.resolveRange(range: autoRange, raw: maxMin, targetTicks: targetTicks)
+        scale.min = minMax.0
+        scale.max = minMax.1
+        if resetOriginalRange {
+            scale.setOriginalRange(min: minMax.0, max: minMax.1)
+        }
     }
     
     private class func resolveRange(range: AxisAutoRange,
