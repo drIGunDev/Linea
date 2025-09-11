@@ -11,8 +11,9 @@ import SwiftUI
 /// - background, corner radius, grid opacity,
 /// - x/y tick targets and default formatters,
 /// - grid master enable flag.
-public struct LinearGraphStyle: Sendable, Hashable {
-    public var gridEnabled: Bool = true
+public struct LinearGraphStyle {
+    public var gridEnabled: Bool
+    public var gridColor: Color
     public var gridOpacity: Double
     public var cornerRadius: CGFloat
     public var background: AnyShapeStyle
@@ -21,27 +22,19 @@ public struct LinearGraphStyle: Sendable, Hashable {
     
     public init(
         gridEnabled: Bool = true,
-        gridOpacity: Double = 0.12,
+        gridColor: Color = .gray,
+        gridOpacity: Double = 1,
         cornerRadius: CGFloat = 10,
         background: some ShapeStyle = .thinMaterial,
         xTickTarget: Int = 6,
         yTickTarget: Int = 5
     ) {
         self.gridEnabled = gridEnabled
+        self.gridColor = gridColor
         self.gridOpacity = gridOpacity
         self.cornerRadius = cornerRadius
         self.background = AnyShapeStyle(background)
         self.xTickTarget = xTickTarget
         self.yTickTarget = yTickTarget
-    }
-    
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(gridOpacity)
-        hasher.combine(cornerRadius)
-    }
-    
-    public static func == (lhs: LinearGraphStyle, rhs: LinearGraphStyle) -> Bool {
-        lhs.gridOpacity == rhs.gridOpacity
-        && lhs.cornerRadius == rhs.cornerRadius
     }
 }

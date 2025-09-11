@@ -19,6 +19,10 @@ public struct LinearSeries: Equatable {
         self.style = style
     }
     
+    public mutating func clean() {
+        points.removeAll()
+    }
+    
     public static func == (lhs: LinearSeries, rhs: LinearSeries) -> Bool {
         lhs.points.count == rhs.points.count 
     }

@@ -23,11 +23,11 @@ public final class YAxes<SeriesID: Hashable> {
         }
     }
     
-    class public func bind(axis: YAxis, to seriesIds: Set<SeriesID>) -> YAxes<SeriesID> {
+    class public func bind(axis: YAxis, to seriesIds: Array<SeriesID>) -> YAxes<SeriesID> {
         .init(bindings: [.init(axis: axis, seriesIds: seriesIds)])
     }
     
-    public func bind(axis: YAxis, to seriesIds: Set<SeriesID>) -> YAxes<SeriesID> {
+    public func bind(axis: YAxis, to seriesIds: Array<SeriesID>) -> YAxes<SeriesID> {
         bindings.append(.init(axis: axis, seriesIds: seriesIds))
         return self
     }
@@ -43,7 +43,7 @@ public final class YAxes<SeriesID: Hashable> {
             axis.resolveRange(maxMin: (ymin, ymax), targetTicks: targetTicks, resetOriginalRange: resetOriginalRange)
         }
         
-        func setAxis(axis: YAxis, seriesIds: Set<SeriesID>) {
+        func setAxis(axis: YAxis, seriesIds: Array<SeriesID>) {
             if seriesIds.isEmpty {
                 let seriesesArray = Array(series.values)
                 guard seriesesArray.count > 0 else { return }
@@ -62,7 +62,7 @@ public final class YAxes<SeriesID: Hashable> {
         
         if bindings.isEmpty {
             let axis = YAxis()
-            let seriesIds: Set<SeriesID> = Set(series.keys)
+            let seriesIds: Array<SeriesID> = Array(series.keys)
             setAxis(axis: axis, seriesIds: seriesIds)
             return
         }

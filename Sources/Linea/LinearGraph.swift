@@ -150,8 +150,8 @@ public struct LinearGraph<SeriesID: Hashable>: View {
             // When series change, optionally recompute axis ranges (auto)
             .onChange(of: series, initial: true) { _, newValue in
                 guard autoRescaleOnSeriesChange else { return }
-                xAxis.resolveRange(series: newValue, targetTicks: style.xTickTarget)
-                yAxes.resolveRange(series: newValue, targetTicks: style.yTickTarget)
+                xAxis.resolveRange(series: newValue, targetTicks: style.xTickTarget, resetOriginalRange: true)
+                yAxes.resolveRange(series: newValue, targetTicks: style.yTickTarget, resetOriginalRange: true)
             }
         }
     }
@@ -162,6 +162,8 @@ private extension LinearGraph {
     func drawGrid() -> some View {
         Canvas { ctx, size in
             guard style.gridEnabled else { return }
+            guard !series.isEmpty else { return }
+            
             var grid = Path()
 
             // Vertical lines (X)
@@ -186,8 +188,9 @@ private extension LinearGraph {
                     grid.addLine(to: .init(x: size.width, y: Y))
                 }
             }
-
-            ctx.stroke(grid, with: .color(.secondary.opacity(style.gridOpacity)), lineWidth: 0.5)
+            grid.addRect(CGRect(origin: .zero, size: size))
+            
+            ctx.stroke(grid, with: .color(style.gridColor.opacity(style.gridOpacity)), lineWidth: 0.5)
         }
         .clipShape(RoundedRectangle(cornerRadius: style.cornerRadius))
     }
@@ -196,7 +199,8 @@ private extension LinearGraph {
     func drawAxesLabel() -> some View {
         Canvas { ctx, size in
             guard style.gridEnabled else { return }
-
+            guard !series.isEmpty else { return }
+            
             // X labels
             if xAxis.gridEnabled {
                 let xt = xAxis.tickProvider.ticks(scale: xAxis.scale, target: style.xTickTarget)
@@ -239,6 +243,11 @@ private extension LinearGraph {
     /// Draws all series, each mapped to the Y axis it’s bound to in `yAxes`.
     func drawLines() -> some View {
         Canvas { ctx, size in
+            guard !series.isEmpty else { return }
+            
+            let clipRect = CGRect(origin: .zero, size: size)
+            ctx.clip(to: Path(clipRect))
+            
             yAxes.bindings.forEach { binding in
                 let yAxis = binding.axis
                 for id in binding.seriesIds {

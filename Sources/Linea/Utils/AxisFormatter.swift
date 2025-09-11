@@ -12,6 +12,20 @@ public protocol AxisFormatter: Sendable {
     func string(for value: Double) -> (String, Font)
 }
 
+/// AxisFormatter wrapper
+public struct AnyAxisFormatter: @preconcurrency AxisFormatter {
+    private let _wrappedValue: @MainActor (Double) -> (String, Font)
+    
+    public init(_ wrappedValue: @escaping  @MainActor (Double) -> (String, Font)) {
+        self._wrappedValue = wrappedValue
+    }
+    
+    @MainActor
+    public func string(for value: Double) -> (String, Font) {
+        _wrappedValue(value)
+    }
+}
+
 /// NumberAxisFormatter supports fixed decimals and optional SI prefixes.
 public struct NumberAxisFormatter: AxisFormatter {
     public init(decimals: Int = 2, useSI: Bool = false) {

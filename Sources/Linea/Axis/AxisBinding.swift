@@ -11,11 +11,11 @@ import Foundation
 /// The chart uses these bindings to map each series to its Y space.
 public final class AxisBinding<SeriesID: Hashable> {
     public let axis: YAxis
-    public let seriesIds: Set<SeriesID>
+    public let seriesIds: Array<SeriesID>
     
     public init(
         axis: YAxis = .init(),
-        seriesIds: Set<SeriesID> = []
+        seriesIds: Array<SeriesID> = []
     ) {
         self.axis = axis
         self.seriesIds = seriesIds
