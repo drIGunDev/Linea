@@ -13,10 +13,10 @@ public protocol AxisFormatter: Sendable {
 }
 
 /// AxisFormatter wrapper
-public struct AnyAxisFormatter: @preconcurrency AxisFormatter {
+public struct AnyAxisFormatter: @unchecked Sendable, @preconcurrency AxisFormatter {
     private let _wrappedValue: @MainActor (Double) -> (String, Font)
     
-    public init(_ wrappedValue: @escaping  @MainActor (Double) -> (String, Font)) {
+    public init(_ wrappedValue: @escaping @MainActor (Double) -> (String, Font)) {
         self._wrappedValue = wrappedValue
     }
     
