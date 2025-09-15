@@ -14,6 +14,7 @@ import SwiftUI
 
     public private(set) var originalMin: Double
     public private(set) var originalMax: Double
+    
     public var clampToOriginal: Bool = true
 
     public init(min: Double, max: Double) {
