@@ -3,7 +3,7 @@
 //  Linea
 //
 //  Created by Igor Gun on 02.09.25.
-//  Assistant: ChatGPT (AI)  
+//  Assistant: ChatGPT (AI)
 
 import SwiftUI
 
@@ -105,10 +105,19 @@ public struct LinearGraph<SeriesID: Hashable>: View {
                                 width:  value.translation.width - lastDrag.width,
                                 height: value.translation.height - lastDrag.height
                             )
-                            // Apply pan to X and to each enabled Y axis according to mode.
-                            yAxes.foreachAxis { yAxis in
-                                controller.pan(x: xAxis.scale, y: yAxis.scale, drag: delta, in: geo.size, mode: panMode)
+
+                            // Pan X once (if enabled), then pan Y for each axis (if enabled),
+                            // to avoid multiplying X shift by the number of Y-axes.
+                            if panMode == .x || panMode == .xy {
+                                let anyYAxis = yAxes.bindings.first?.axis
+                                controller.pan(x: xAxis.scale, y: anyYAxis?.scale ?? xAxis.scale, drag: delta, in: geo.size, mode: .x)
                             }
+                            if panMode == .y || panMode == .xy {
+                                yAxes.foreachAxis { yAxis in
+                                    controller.pan(x: xAxis.scale, y: yAxis.scale, drag: delta, in: geo.size, mode: .y)
+                                }
+                            }
+
                             lastDrag = value.translation
                         }
                         .onEnded { _ in lastDrag = .zero }
@@ -116,16 +125,23 @@ public struct LinearGraph<SeriesID: Hashable>: View {
             }
 
             // PINCH to zoom (conditioned by zoomMode)
-            .if(panMode != .none) { view in
+            .if(zoomMode != .none) { view in
                 view.gesture(
                     MagnificationGesture()
                         .onChanged { scale in
                             let factor = scale / max(0.001, lastPinch)
                             let focus = CGPoint(x: geo.size.width/2, y: geo.size.height/2)
-                            // Apply zoom to X and to each enabled Y axis according to mode.
-                            yAxes.foreachAxis { yAxis in
-                                controller.pinch(x: xAxis.scale, y: yAxis.scale, factor: factor, focus: focus, in: geo.size, mode: zoomMode)
+
+                            if zoomMode == .x || zoomMode == .xy {
+                                let anyYAxis = yAxes.bindings.first?.axis
+                                controller.pinch(x: xAxis.scale, y: anyYAxis?.scale ?? xAxis.scale, factor: factor, focus: focus, in: geo.size, mode: .x)
                             }
+                            if zoomMode == .y || zoomMode == .xy {
+                                yAxes.foreachAxis { yAxis in
+                                    controller.pinch(x: xAxis.scale, y: yAxis.scale, factor: factor, focus: focus, in: geo.size, mode: .y)
+                                }
+                            }
+
                             lastPinch = scale
                         }
                         .onEnded { _ in lastPinch = 1 }
