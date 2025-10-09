@@ -1,5 +1,5 @@
 //
-//  NiceTickProvider.swift
+//  TickProvider.swift
 //  Linea
 //
 //  Created by Igor Gun on 02.09.25.
