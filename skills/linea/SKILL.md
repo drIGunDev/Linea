@@ -11,7 +11,7 @@ Linea is a lightweight, zero-dependency SwiftUI line chart library. It renders v
 ## Installation (SPM)
 
 ```swift
-.package(url: "https://github.com/<owner>/Linea.git", from: "1.0.0")
+.package(url: "https://github.com/<owner>/Linea.git", from: "1.1.4")
 ```
 
 Add `"Linea"` to your target's dependencies.
