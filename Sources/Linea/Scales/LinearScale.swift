@@ -40,9 +40,10 @@ import SwiftUI
     }
 
     public func zoom(by factor: CGFloat, around value: Double) {
-        let span = (max - min) / Double(factor)
-        min = value - span/2
-        max = value + span/2
+        let frac = (value - min) / Swift.max(max - min, 1e-12)
+        let newSpan = (max - min) / Double(factor)
+        min = value - frac * newSpan
+        max = value + (1 - frac) * newSpan
         applyClampToOriginal()
     }
 
@@ -59,7 +60,16 @@ import SwiftUI
     private func applyClampToOriginal() {
         guard clampToOriginal else { return }
         let span = max - min
-        if min < originalMin { min = originalMin; max = originalMin + span }
-        if max > originalMax { max = originalMax; min = originalMax - span }
+        let originalSpan = originalMax - originalMin
+        if span >= originalSpan {
+            min = originalMin
+            max = originalMax
+        } else if min < originalMin {
+            min = originalMin
+            max = originalMin + span
+        } else if max > originalMax {
+            max = originalMax
+            min = originalMax - span
+        }
     }
 }

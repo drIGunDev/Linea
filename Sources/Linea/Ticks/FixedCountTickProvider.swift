@@ -12,7 +12,7 @@ public struct FixedCountTickProvider: TickProvider {
     public init() {}
     public func ticks(scale: any AxisScale, target: Int) -> [Tick] {
         let a = scale.min, b = scale.max
-        guard b > a else { return [] }
+        guard a.isFinite, b.isFinite, b > a else { return [] }
         let step = (b - a) / Double(target)
         return (0...target).map { i in
             Tick(value: a + Double(i) * step, label: "")

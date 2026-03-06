@@ -266,7 +266,8 @@ private extension LinearGraph {
             
             yAxes.bindings.forEach { binding in
                 let yAxis = binding.axis
-                for id in binding.seriesIds {
+                let idsToRender = binding.seriesIds.isEmpty ? Array(series.keys) : binding.seriesIds
+                for id in idsToRender {
                     if let s = series[id] {
                         let sStyle = s.style
                         // Map data points to view space

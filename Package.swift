@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "Linea",
     platforms: [
-        .iOS(.v17), .macOS(.v13)
+        .iOS(.v17), .macOS(.v14)
     ],
     products: [
         .library(name: "Linea", targets: ["Linea"]),
